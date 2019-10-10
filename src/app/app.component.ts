@@ -1,3 +1,5 @@
+import { Message } from './message';
+import { SocketIoService } from './socket-io.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +8,25 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'client';
+  nickname: string;
+  message: string;
+
+  constructor(
+    private socketService: SocketIoService
+  ) { }
+
+  ngOnInit() {
+    this.socketService.messages()
+      .subscribe((m: Message) => {
+        console.log(m);
+      });
+  }
+
+  send() {
+    this.socketService.send({
+      from: this.nickname,
+      message: this.message
+    });
+    this.message = '';
+  }
 }
